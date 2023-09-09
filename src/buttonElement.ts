@@ -28,6 +28,7 @@ export class buttonElement extends Container {
     buttonArea.beginFill(this._colour);
     buttonArea.lineStyle(1, this._outlineColour);
     buttonArea.drawRoundedRect(-width / 2, -height / 2, width, height, 20);
+    buttonArea.endFill();
 
     buttonArea.on("pointertap", this.onClick, this);
     buttonArea.eventMode = "dynamic";
