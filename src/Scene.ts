@@ -42,20 +42,13 @@ export class Scene extends Container implements IScene {
     });
     tl.play();
 
-    // BUTTON TEST
-
-    this.gameConsole = new buttonConsole(150);
-    this.gameConsole.createButton("Play", 200, 80);
-    this.gameConsole.createButton("Quit", 200, 80);
-
-    // this.buttonTestA = new buttonElement("Play", 200, 100);
-    // this.buttonTestA.y = -200;
-
-    // this.buttonTestB = new buttonElement("Quit", 200, 100);
-    // this.buttonTestB.y = 200;
+    // BUTTON TES
+    this.gameConsole = new buttonConsole(50);
+    this.gameConsole.createButton("Lucky Numbers", 125, 30);
+    this.gameConsole.createButton("Start", 75, 30);
+    this.gameConsole.createButton("Reset", 75, 30);
 
     this.baseContainer.addChild(this.gameConsole);
-    // this.baseContainer.addChild(this.buttonTestB);
 
     this.baseContainer.addChild(this.animatedPyg);
     this.baseContainer.addChild(this.pyg);
@@ -69,7 +62,21 @@ export class Scene extends Container implements IScene {
     console.log(screenWidth, screenHeight);
     // const centreX = this.width / 2;
     // const centreY = this.height / 2;
-    this.baseContainer.x = screenWidth / 2;
-    this.baseContainer.y = screenHeight / 2;
+
+    this.baseContainer.width = screenWidth;
+    this.baseContainer.height = screenHeight;
+    const scaleValue = Math.min(
+      this.baseContainer.scale.x,
+      this.baseContainer.scale.y
+    );
+    this.baseContainer.setTransform(
+      screenWidth / 2,
+      screenHeight / 2,
+      scaleValue,
+      scaleValue
+    );
+
+    this.gameConsole.x = 170;
+    this.gameConsole.y = 30;
   }
 }
