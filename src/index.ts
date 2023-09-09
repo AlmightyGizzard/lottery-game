@@ -1,4 +1,5 @@
-import { Application, Sprite, Container } from "pixi.js";
+import { Application } from "pixi.js";
+import { Scene } from "./Scene";
 
 const app = new Application({
   view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
@@ -9,19 +10,6 @@ const app = new Application({
   height: 480,
 });
 
-const conty: Container = new Container();
-conty.x = -200;
-conty.y = 0;
-app.stage.addChild(conty);
+const scene: Scene = new Scene(app.screen.width, app.screen.height);
 
-const pyg: Sprite = Sprite.from("pyg.png");
-pyg.scale = { x: 0.1, y: 0.1 };
-const clampy: Sprite = Sprite.from("clampy.png");
-
-clampy.anchor.set(0.5);
-
-clampy.x = app.screen.width / 2;
-clampy.y = app.screen.height / 2;
-
-conty.addChild(clampy);
-clampy.addChild(pyg);
+app.stage.addChild(scene);
