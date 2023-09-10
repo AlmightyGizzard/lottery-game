@@ -15,6 +15,7 @@ export class buttonConsole extends Container {
     text: string,
     width: number,
     height: number,
+    buttonFunction: () => void,
     colour?: number,
     outlineColour?: number
   ) {
@@ -22,6 +23,7 @@ export class buttonConsole extends Container {
       text,
       width,
       height,
+      buttonFunction,
       colour ?? 0x000000,
       outlineColour ?? 0xff00ff
     );

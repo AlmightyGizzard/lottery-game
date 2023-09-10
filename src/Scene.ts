@@ -14,8 +14,13 @@ export class Scene extends Container implements IScene {
 
   private gameConsole: buttonConsole;
 
-  private balls: number[];
+  private lotteryPool: number[];
   private chosenNumbers: number[];
+  private winningNumbers: number[];
+
+  private ballContainer: Container;
+  private playerBalls: Ball[];
+  private dealerBalls: Ball[];
 
   constructor() {
     super(); // Mandatory! This calls the superclass constructor.
@@ -23,8 +28,12 @@ export class Scene extends Container implements IScene {
     gsap.registerPlugin(PixiPlugin, CSSPlugin);
 
     this.baseContainer = new Container();
+    this.ballContainer = new Container();
 
-    this.balls = [
+    this.playerBalls = [];
+    this.dealerBalls = [];
+
+    this.lotteryPool = [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
       22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
       40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
@@ -32,29 +41,31 @@ export class Scene extends Container implements IScene {
     ];
     //this.balls = [1, 2, 3, 4, 5, 6, 7];
     this.chosenNumbers = [];
+    this.winningNumbers = [];
 
-    this.randomBall();
-    this.randomBall();
-    this.randomBall();
-    this.randomBall();
-    this.randomBall();
-    this.randomBall();
-    console.log(this.chosenNumbers);
-    console.log(this.balls);
+    for (let i = 0; i < 6; i++) {
+      const playerBall = new Ball(69);
+      playerBall.x = i * 50;
+      playerBall.y = -25;
+      this.playerBalls.push(playerBall);
+      this.ballContainer.addChild(playerBall);
 
-    const offset = -200;
-    for (let i = 0; i < this.chosenNumbers.length; i++) {
-      const ballRender = new Ball(this.chosenNumbers[i], 0xff00ff);
-      ballRender.x = i * 70 + offset;
-      ballRender.y = -50;
-      this.baseContainer.addChild(ballRender);
+      const dealerBall = new Ball(this.randomBall(this.winningNumbers));
+      dealerBall.x = i * 50;
+      dealerBall.y = 25;
+      dealerBall.alpha = 0;
+      this.dealerBalls.push(dealerBall);
+      this.ballContainer.addChild(dealerBall);
     }
+
+    this.ballContainer.x = -this.ballContainer.width / 2 - 50;
+    this.ballContainer.y = 80;
 
     this.animatedPyg = Sprite.from("pyg.png");
     this.animatedPyg.anchor.set(0.5);
     this.animatedPyg.scale = { x: 0.05, y: 0.05 };
-    this.animatedPyg.x = -200;
-    this.animatedPyg.y = 100;
+    this.animatedPyg.x = -20;
+    this.animatedPyg.y = -80;
 
     const tl = gsap.timeline({ repeat: -1, yoyo: true });
 
@@ -66,33 +77,68 @@ export class Scene extends Container implements IScene {
 
     // BUTTON TES
     this.gameConsole = new buttonConsole(50);
-    this.gameConsole.createButton("Lucky Numbers", 125, 30);
-    this.gameConsole.createButton("Start", 75, 30);
-    this.gameConsole.createButton("Reset", 75, 30);
+    this.gameConsole.createButton("Lucky Numbers", 125, 30, () => {
+      this.luckyDip();
+    });
+    this.gameConsole.createButton("Start", 75, 30, () => {
+      this.runGame();
+    });
+    this.gameConsole.createButton("Reset", 75, 30, () => {
+      this.resetGame();
+    });
 
     this.baseContainer.addChild(this.gameConsole);
+
+    this.baseContainer.addChild(this.ballContainer);
 
     this.baseContainer.addChild(this.animatedPyg);
 
     this.addChild(this.baseContainer);
   }
 
-  private randomBall(): number {
+  private randomBall(array: number[]): number {
     // get a random ball from the array
-    const randomBall = Math.floor(Math.random() * this.balls.length) + 1;
+    const randomBall = Math.floor(Math.random() * this.lotteryPool.length) + 1;
 
-    for (let i = 0; i < this.balls.length; i++) {
+    for (let i = 0; i < this.lotteryPool.length; i++) {
       //console.log(this.balls[i], randomBall);
       if (
-        this.balls[i] === randomBall &&
-        !this.chosenNumbers.includes(this.balls[i])
+        this.lotteryPool[i] === randomBall &&
+        !array.includes(this.lotteryPool[i])
       ) {
-        this.chosenNumbers.push(randomBall);
+        array.push(randomBall);
         return randomBall;
       }
     }
-    this.randomBall();
+    this.randomBall(array);
     return randomBall;
+  }
+
+  private luckyDip(): void {
+    this.chosenNumbers = [];
+    console.log(this.chosenNumbers);
+    console.log(this.lotteryPool);
+    for (let i = 0; i < 6; i++) {
+      const value = this.randomBall(this.chosenNumbers);
+      this.playerBalls[i].setNumber(value);
+    }
+  }
+
+  private runGame(): void {
+    const tl = gsap.timeline();
+
+    for (let i = 0; i < this.dealerBalls.length; i++) {
+      console.log("BALS: ", this.dealerBalls[i]);
+      tl.to(this.dealerBalls[i], { alpha: 1, duration: 0.5 });
+    }
+    tl.play();
+  }
+
+  resetGame(): void {
+    const tl = gsap.timeline();
+    for (let i = 0; i < this.dealerBalls.length; i++) {
+      tl.to(this.dealerBalls[i], { alpha: 0, duration: 0.5 });
+    }
   }
 
   //   private resetBalls(): void {}

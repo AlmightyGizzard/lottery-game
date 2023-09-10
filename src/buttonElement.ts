@@ -11,10 +11,13 @@ export class buttonElement extends Container {
   private readonly _colour: number;
   private readonly _outlineColour: number;
 
+  private readonly _buttonFunction: () => void;
+
   constructor(
     text: string,
     width: number,
     height: number,
+    buttonFunction: () => void,
     colour: number,
     outlineColour: number
   ) {
@@ -22,6 +25,7 @@ export class buttonElement extends Container {
 
     this._colour = colour ?? 0xff00ff;
     this._outlineColour = outlineColour ?? 0x000000;
+    this._buttonFunction = buttonFunction;
 
     // Sort out the main shape of the button.
     const buttonArea = new Graphics();
@@ -49,6 +53,7 @@ export class buttonElement extends Container {
 
   private onClick(e: FederatedPointerEvent): void {
     console.log("You interacted with ", this._buttonText.text);
-    console.log("Button Data: ", e);
+    console.log(e);
+    this._buttonFunction();
   }
 }
