@@ -19,6 +19,7 @@ export class ButtonElement extends Container {
     width: number,
     height: number,
     buttonFunction: () => void,
+    textStyle: TextStyle,
     colour: number,
     outlineColour: number
   ) {
@@ -39,12 +40,7 @@ export class ButtonElement extends Container {
     buttonArea.eventMode = "dynamic";
 
     // Sort out the text overlaid atop the button.
-    const style = new TextStyle({
-      align: "center",
-      fill: "#ffffff",
-      fontSize: 16,
-    });
-    this._buttonText = new Text(text, style);
+    this._buttonText = new Text(text, textStyle);
     this._buttonText.x = -this._buttonText.width / 2;
     this._buttonText.y = -this._buttonText.height / 2;
 

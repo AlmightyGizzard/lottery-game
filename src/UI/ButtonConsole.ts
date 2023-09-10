@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import { Container, TextStyle } from "pixi.js";
 import { ButtonElement } from "./ButtonElement";
 
 export class ButtonConsole extends Container {
@@ -16,6 +16,7 @@ export class ButtonConsole extends Container {
     width: number,
     height: number,
     buttonFunction: () => void,
+    textStyle: TextStyle,
     colour?: number,
     outlineColour?: number
   ): ButtonElement {
@@ -24,6 +25,7 @@ export class ButtonConsole extends Container {
       width,
       height,
       buttonFunction,
+      textStyle,
       colour ?? 0x000000,
       outlineColour ?? 0xff00ff
     );

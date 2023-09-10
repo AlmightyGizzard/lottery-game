@@ -1,27 +1,67 @@
 import { Container, Graphics, TextStyle, Text } from "pixi.js";
+import { ButtonConsole } from "./UI/ButtonConsole";
 
 export class Ball extends Container {
-  private readonly _number: Text;
+  private readonly _textElement: Text;
+  private _number: number;
   private _colour: number;
   private _graphic: Graphics;
 
-  constructor(number: number) {
+  constructor(number: number, buttons = false, style?: TextStyle) {
     super();
 
     this._colour = 0xff0000;
+    this._number = number;
 
-    const style = new TextStyle({
-      align: "center",
-      fill: "#000000",
-      fontSize: 16,
-    });
-    this._number = new Text(number, style);
+    const textStyle =
+      style ??
+      new TextStyle({
+        align: "center",
+        fill: "#000000",
+        fontSize: 16,
+      });
+    this._textElement = new Text(number, textStyle);
 
     this._graphic = new Graphics();
     this.setNumber(number);
 
+    if (buttons) {
+      const textStyle = new TextStyle({
+        align: "center",
+        fill: "#ffffff",
+        fontSize: 8,
+      });
+
+      const arrowConsole = new ButtonConsole(25);
+      arrowConsole.createButton(
+        "Up",
+        20,
+        20,
+        () => {
+          const addedNum = this._number + 1;
+          const newValue = addedNum > 59 ? 1 : addedNum;
+          this.setNumber(newValue);
+        },
+        textStyle
+      );
+      arrowConsole.createButton(
+        "Down",
+        20,
+        20,
+        () => {
+          console.log("Down");
+          const subtractedNum = this._number - 1;
+          const newValue = subtractedNum < 1 ? 59 : subtractedNum;
+          this.setNumber(newValue);
+        },
+        textStyle
+      );
+      arrowConsole.y = -50;
+      this.addChild(arrowConsole);
+    }
+
     this.addChild(this._graphic);
-    this._graphic.addChild(this._number);
+    this._graphic.addChild(this._textElement);
   }
 
   public draw(): void {
@@ -37,7 +77,8 @@ export class Ball extends Container {
   }
 
   public setNumber(value: number): void {
-    this._number.text = value;
+    this._number = value;
+    this._textElement.text = this._number;
 
     if (1 <= value && value <= 59) {
       if (value <= 9) {
@@ -60,8 +101,8 @@ export class Ball extends Container {
         this._colour = 0xa007a0;
       }
 
-      this._number.x = -this._number.width / 2;
-      this._number.y = -this._number.height / 2;
+      this._textElement.x = -this._textElement.width / 2;
+      this._textElement.y = -this._textElement.height / 2;
     }
 
     this.draw();

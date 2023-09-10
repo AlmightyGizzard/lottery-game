@@ -1,6 +1,6 @@
 import { gsap } from "gsap";
 import { PixiPlugin, CSSPlugin } from "gsap/all";
-import { Container, Sprite } from "pixi.js";
+import { Container, Sprite, TextStyle } from "pixi.js";
 // import { buttonElement } from "./buttonElement";
 import { ButtonConsole } from "./UI/ButtonConsole";
 import { IScene } from "./SceneManager";
@@ -51,7 +51,7 @@ export class Scene extends Container implements IScene {
     this.winningNumbers = [];
 
     for (let i = 0; i < 6; i++) {
-      const playerBall = new Ball(69);
+      const playerBall = new Ball(69, true);
       playerBall.x = i * 50;
       playerBall.y = -25;
       this._playerBalls.push(playerBall);
@@ -86,6 +86,11 @@ export class Scene extends Container implements IScene {
     });
     tl.play();
 
+    const style = new TextStyle({
+      align: "center",
+      fill: "#ffffff",
+      fontSize: 16,
+    });
     // BUTTON TES
     this._gameConsole = new ButtonConsole(50);
     const luckyDipButton: ButtonElement = this._gameConsole.createButton(
@@ -94,14 +99,27 @@ export class Scene extends Container implements IScene {
       30,
       () => {
         this.luckyDip();
-      }
+      },
+      style
     );
-    this._gameConsole.createButton("Start", 75, 30, () => {
-      this.runGame();
-    });
-    this._gameConsole.createButton("Reset", 75, 30, () => {
-      this.resetGame();
-    });
+    this._gameConsole.createButton(
+      "Start",
+      75,
+      30,
+      () => {
+        this.runGame();
+      },
+      style
+    );
+    this._gameConsole.createButton(
+      "Reset",
+      75,
+      30,
+      () => {
+        this.resetGame();
+      },
+      style
+    );
 
     this._luckyDipButton = luckyDipButton;
 
@@ -160,7 +178,7 @@ export class Scene extends Container implements IScene {
     // TODO DC: maybe a rollin from the side?
     // Reveal the dealer balls one by one.
     for (let i = 0; i < this._dealerBalls.length; i++) {
-      tl.to(this._dealerBalls[i], { alpha: 1, duration: 0.01 });
+      tl.to(this._dealerBalls[i], { alpha: 1, duration: 0.4 });
       if (this.winningNumbers.includes(this.chosenNumbers[i])) {
         matchingNumbers.push(this.chosenNumbers[i]);
       }
@@ -190,7 +208,7 @@ export class Scene extends Container implements IScene {
     for (let i = 0; i < this._dealerBalls.length; i++) {
       tl.to(this._dealerBalls[i], {
         alpha: 0,
-        duration: 0.01,
+        duration: 0.2,
         onComplete: () => {
           this._dealerBalls[i].setNumber(this.randomBall(this.winningNumbers));
         },
