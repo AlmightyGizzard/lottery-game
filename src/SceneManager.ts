@@ -1,4 +1,5 @@
 import { Application, DisplayObject } from "pixi.js";
+// import { Scene } from "./Scene";
 
 export class SceneManager {
   private constructor() {
@@ -22,26 +23,21 @@ export class SceneManager {
   }
 
   // Use this function ONCE to start the entire machinery
-  public static initialize(
-    width: number,
-    height: number,
-    background: number
-  ): void {
+  public static initialize(background: number): void {
     // Create our pixi app
     SceneManager.app = new Application({
       view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
+      resizeTo: window,
       resolution: window.devicePixelRatio || 1,
       autoDensity: true,
       backgroundColor: background,
-      width: width,
-      height: height,
-      resizeTo: window,
     });
 
     // Add the ticker
     SceneManager.app.ticker.add(SceneManager.update);
 
     window.addEventListener("resize", SceneManager.resize);
+    SceneManager.resize();
   }
 
   public static resize(): void {

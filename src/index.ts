@@ -12,11 +12,9 @@ import { SceneManager } from "./SceneManager";
 //   resizeTo: window,
 // });
 
-SceneManager.initialize(640, 480, 0x696969);
+SceneManager.initialize(0x564d65);
 
 const scene: Scene = new Scene();
 SceneManager.changeScene(scene);
 // Strange bug I don't have time to troubleshoot, resize needs
 // to be called twice here else it won't resize properly on initial start.
-scene.resize(SceneManager.width, SceneManager.height);
-scene.resize(SceneManager.width, SceneManager.height);

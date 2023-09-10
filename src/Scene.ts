@@ -1,12 +1,13 @@
 import { gsap } from "gsap";
 import { PixiPlugin, CSSPlugin } from "gsap/all";
-import { Container, Sprite, TextStyle } from "pixi.js";
+import { Container, TextStyle } from "pixi.js";
 // import { buttonElement } from "./buttonElement";
 import { ButtonConsole } from "./UI/ButtonConsole";
 import { IScene } from "./SceneManager";
 import { Ball } from "./Ball";
 import { ButtonElement } from "./UI/ButtonElement";
 import { WinBanner } from "./UI/WinBanner";
+import { DrawBowl } from "./DrawBowl";
 
 export class Scene extends Container implements IScene {
   private readonly _lotteryPool: number[];
@@ -14,8 +15,8 @@ export class Scene extends Container implements IScene {
 
   private readonly _baseContainer: Container;
 
-  private readonly _animatedPyg: Sprite;
   private readonly _winBanner: WinBanner;
+  private readonly _drawBowl: DrawBowl;
 
   private readonly _gameConsole: ButtonConsole;
   private readonly _luckyDipButton: ButtonElement;
@@ -65,26 +66,12 @@ export class Scene extends Container implements IScene {
       this._ballContainer.addChild(dealerBall);
     }
 
-    this._ballContainer.x = -this._ballContainer.width / 2 - 50;
-    this._ballContainer.y = 80;
     this.luckyDip();
-
-    this._animatedPyg = Sprite.from("pyg.png");
-    this._animatedPyg.anchor.set(0.5);
-    this._animatedPyg.scale = { x: 0.05, y: 0.05 };
-    this._animatedPyg.x = -20;
-    this._animatedPyg.y = -80;
 
     this._winBanner = new WinBanner(200, 100);
     this._winBanner.visible = false;
 
-    const tl = gsap.timeline({ repeat: -1, yoyo: true });
-
-    tl.to(this._animatedPyg, {
-      duration: 5,
-      rotation: 60,
-    });
-    tl.play();
+    this._drawBowl = new DrawBowl();
 
     const style = new TextStyle({
       align: "center",
@@ -125,13 +112,18 @@ export class Scene extends Container implements IScene {
 
     this._baseContainer.addChild(this._winBanner);
 
+    this._baseContainer.addChild(this._drawBowl);
+
     this._baseContainer.addChild(this._gameConsole);
 
     this._baseContainer.addChild(this._ballContainer);
 
-    this._baseContainer.addChild(this._animatedPyg);
-
     this.addChild(this._baseContainer);
+
+    // this.addChild(this._winBanner);
+    // this.addChild(this._drawBowl);
+    // this.addChild(this._gameConsole);
+    // this.addChild(this._ballContainer);
   }
 
   private randomBall(array: number[]): number {
@@ -164,6 +156,8 @@ export class Scene extends Container implements IScene {
     // this.winningNumbers.pop();
     // this.winningNumbers.pop();
     // this.winningNumbers.push(1, 2, 3);
+
+    this._drawBowl.spin();
 
     console.log("CHOSEN: ", this.chosenNumbers);
     console.log("WINNING: ", this.winningNumbers);
@@ -199,6 +193,7 @@ export class Scene extends Container implements IScene {
     const tl = gsap.timeline();
 
     this._winBanner.hide();
+    this._drawBowl.resetSpin();
 
     // Make the lucky dip button visible again.
     this._luckyDipButton.show();
@@ -219,23 +214,46 @@ export class Scene extends Container implements IScene {
   public update(_framesPassed: number): void {}
 
   public resize(screenWidth: number, screenHeight: number): void {
+    this._winBanner.visible = true;
+    const isLandscape = screenHeight < screenWidth;
+    // const centreX = screenWidth / 2;
+    // const centreY = screenHeight / 2;
+
     this._baseContainer.width = screenWidth;
     this._baseContainer.height = screenHeight;
+
     const scaleValue = Math.min(
       this._baseContainer.scale.x,
       this._baseContainer.scale.y
     );
-    this._baseContainer.setTransform(
-      screenWidth / 2,
-      screenHeight / 2,
-      scaleValue,
-      scaleValue
-    );
+    this._baseContainer.setTransform(0, 0, scaleValue, scaleValue);
 
-    this._gameConsole.x = 150;
-    this._gameConsole.y = 30;
+    // A rudimentary set of positions to account for landscape and mobile
+    // - with a proper parenting setup this could be handled more accurately.
+    if (isLandscape) {
+      this._drawBowl.x = 0 + this._drawBowl.width / 2;
+      this._drawBowl.y = 0 + this._drawBowl.height / 2;
 
-    this._winBanner.x = 0;
-    this._winBanner.y = -50;
+      this._ballContainer.x = this._drawBowl.x;
+      this._ballContainer.y = this._drawBowl.y + this._drawBowl.height + 20;
+
+      this._gameConsole.x =
+        this._ballContainer.x + this._ballContainer.width + 80;
+      this._gameConsole.y = this._ballContainer.y - 70;
+
+      this._winBanner.x = this._drawBowl.x + 200;
+      this._winBanner.y = this._drawBowl.y;
+    } else {
+      this._ballContainer.scale = { x: 1.4, y: 1.4 };
+      this._ballContainer.x = -this._ballContainer.width / 2 + 25;
+      this._ballContainer.y = 160;
+
+      this._gameConsole.scale = { x: 1.4, y: 1.4 };
+      this._gameConsole.x = 0;
+      this._gameConsole.y = -this._gameConsole.height / 2 + 300;
+
+      this._winBanner.x = 0;
+      this._winBanner.y = -50;
+    }
   }
 }
