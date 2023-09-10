@@ -37,11 +37,13 @@ export class SceneManager {
     SceneManager.app.ticker.add(SceneManager.update);
 
     window.addEventListener("resize", SceneManager.resize);
-    SceneManager.resize();
   }
 
   public static resize(): void {
+    // no clue WHAT this is, but for some reason resize needs to be called twice
+    // in order to properly resize on initial load.
     if (SceneManager.currentScene) {
+      SceneManager.currentScene.resize(SceneManager.width, SceneManager.height);
       SceneManager.currentScene.resize(SceneManager.width, SceneManager.height);
     }
   }
@@ -57,6 +59,7 @@ export class SceneManager {
     // Add the new one
     SceneManager.currentScene = newScene;
     SceneManager.app.stage.addChild(SceneManager.currentScene);
+    SceneManager.resize();
   }
 
   // This update will be called by a pixi ticker and tell the scene that a tick happened

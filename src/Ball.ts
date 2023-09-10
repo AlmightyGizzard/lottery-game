@@ -49,7 +49,6 @@ export class Ball extends Container {
         20,
         20,
         () => {
-          console.log("Down");
           const subtractedNum = this._number - 1;
           const newValue = subtractedNum < 1 ? 59 : subtractedNum;
           this.setNumber(newValue);
@@ -106,5 +105,9 @@ export class Ball extends Container {
     }
 
     this.draw();
+  }
+
+  public getNumber(): number {
+    return this._number;
   }
 }

@@ -26,8 +26,8 @@ export class ButtonConsole extends Container {
       height,
       buttonFunction,
       textStyle,
-      colour ?? 0x000000,
-      outlineColour ?? 0xff00ff
+      colour ?? 0x64d65,
+      outlineColour ?? 0x2dd881
     );
     this.buttons.push(button);
     this.addChild(button);

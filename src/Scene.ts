@@ -80,17 +80,16 @@ export class Scene extends Container implements IScene {
       fill: "#ffffff",
       fontSize: 12,
     });
-
-    this._explainText = new Text(
-      "I am sadly not an artist. \n As such, replacing a well-animated bowl \nof lottery balls is Tim here. Tim is happy.",
-      explainStyle
-    );
-
     const style = new TextStyle({
       align: "center",
       fill: "#ffffff",
       fontSize: 16,
     });
+
+    this._explainText = new Text(
+      "I am sadly not an artist. \n As such, replacing a well-animated bowl \nof lottery balls is Tim here. Tim is happy.",
+      explainStyle
+    );
 
     // GAME CONSOLE SETUP
     this._gameConsole = new ButtonConsole(50);
@@ -161,17 +160,8 @@ export class Scene extends Container implements IScene {
   }
 
   private runGame(): void {
-    //This is a quick test to ensure the win states work:
-    // this.chosenNumbers = [1, 2, 3, 4, 5, 6];
-    // this.winningNumbers.pop();
-    // this.winningNumbers.pop();
-    // this.winningNumbers.pop();
-    // this.winningNumbers.push(1, 2, 3);
-
     this._drawBowl.spin();
 
-    console.log("CHOSEN: ", this.chosenNumbers);
-    console.log("WINNING: ", this.winningNumbers);
     const matchingNumbers = [];
     const tl = gsap.timeline();
 
@@ -180,9 +170,12 @@ export class Scene extends Container implements IScene {
     this._luckyDipButton.hide();
 
     // TODO DC: If you have time, put fancier animation in here,
-    // TODO DC: maybe a rollin from the side?
+    // TODO DC: maybe a roll-in from the side?
     // Reveal the dealer balls one by one.
     for (let i = 0; i < this._dealerBalls.length; i++) {
+      if (this._playerBalls[i].getNumber() !== this.chosenNumbers[i]) {
+        this.chosenNumbers[i] = this._playerBalls[i].getNumber();
+      }
       tl.to(this._dealerBalls[i], { alpha: 1, duration: 0.4 });
       if (this.winningNumbers.includes(this.chosenNumbers[i])) {
         matchingNumbers.push(this.chosenNumbers[i]);
@@ -190,12 +183,9 @@ export class Scene extends Container implements IScene {
     }
     tl.play();
 
-    console.log("MATCHING NUMBERS: ", matchingNumbers);
-
     if (matchingNumbers.length >= 3) {
       const winAmount = this._winAmounts[matchingNumbers.length - 3];
       this._winBanner.show(winAmount);
-      console.log("YOU WIN: ", winAmount);
     }
   }
 

@@ -49,8 +49,7 @@ export class ButtonElement extends Container {
   }
 
   private onClick(e: FederatedPointerEvent): void {
-    console.log("You interacted with ", this._buttonText.text);
-    console.log(e.NONE);
+    console.log(e);
     this._buttonFunction();
   }
 
