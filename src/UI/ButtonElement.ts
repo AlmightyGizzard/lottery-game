@@ -5,8 +5,9 @@ import {
   Text,
   FederatedPointerEvent,
 } from "pixi.js";
+import gsap from "gsap";
 
-export class buttonElement extends Container {
+export class ButtonElement extends Container {
   private readonly _buttonText: Text;
   private readonly _colour: number;
   private readonly _outlineColour: number;
@@ -53,7 +54,27 @@ export class buttonElement extends Container {
 
   private onClick(e: FederatedPointerEvent): void {
     console.log("You interacted with ", this._buttonText.text);
-    console.log(e);
+    console.log(e.NONE);
     this._buttonFunction();
+  }
+
+  public show(): void {
+    const tl = gsap.timeline();
+    this.visible = true;
+    tl.to(this, {
+      alpha: 1,
+      duration: 0.2,
+    });
+  }
+
+  public hide(): void {
+    const tl = gsap.timeline();
+    tl.to(this, {
+      alpha: 0,
+      onComplete: () => {
+        this.visible = false;
+      },
+      duration: 0.2,
+    });
   }
 }

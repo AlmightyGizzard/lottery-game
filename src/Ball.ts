@@ -16,8 +16,6 @@ export class Ball extends Container {
       fontSize: 16,
     });
     this._number = new Text(number, style);
-    this._number.x = -this._number.width / 2;
-    this._number.y = -this._number.height / 2;
 
     this._graphic = new Graphics();
     this.setNumber(number);
@@ -30,7 +28,6 @@ export class Ball extends Container {
     this._graphic.clear();
     const radius = 20;
 
-    console.log(this._colour);
     this._graphic.beginFill(this._colour);
     this._graphic.drawCircle(0, 0, radius);
     this._graphic.endFill();
@@ -41,7 +38,7 @@ export class Ball extends Container {
 
   public setNumber(value: number): void {
     this._number.text = value;
-    console.log("VALUE", value);
+
     if (1 <= value && value <= 59) {
       if (value <= 9) {
         // Colour for 1-9 balls = white
@@ -62,6 +59,9 @@ export class Ball extends Container {
         // Colour for 50-59 balls = purple
         this._colour = 0xa007a0;
       }
+
+      this._number.x = -this._number.width / 2;
+      this._number.y = -this._number.height / 2;
     }
 
     this.draw();

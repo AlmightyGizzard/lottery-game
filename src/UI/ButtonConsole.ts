@@ -1,8 +1,8 @@
 import { Container } from "pixi.js";
-import { buttonElement } from "./buttonElement";
+import { ButtonElement } from "./ButtonElement";
 
-export class buttonConsole extends Container {
-  private buttons: buttonElement[];
+export class ButtonConsole extends Container {
+  private buttons: ButtonElement[];
   private readonly _spacing: number;
   constructor(spacing: number) {
     super();
@@ -18,8 +18,8 @@ export class buttonConsole extends Container {
     buttonFunction: () => void,
     colour?: number,
     outlineColour?: number
-  ) {
-    const button = new buttonElement(
+  ): ButtonElement {
+    const button = new ButtonElement(
       text,
       width,
       height,
@@ -30,6 +30,7 @@ export class buttonConsole extends Container {
     this.buttons.push(button);
     this.addChild(button);
     this.updateList();
+    return button;
   }
 
   private updateList(): void {
