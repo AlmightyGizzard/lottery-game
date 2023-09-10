@@ -1,6 +1,6 @@
 import { gsap } from "gsap";
 import { PixiPlugin, CSSPlugin } from "gsap/all";
-import { Container, TextStyle } from "pixi.js";
+import { Container, TextStyle, Text } from "pixi.js";
 // import { buttonElement } from "./buttonElement";
 import { ButtonConsole } from "./UI/ButtonConsole";
 import { IScene } from "./SceneManager";
@@ -17,6 +17,7 @@ export class Scene extends Container implements IScene {
 
   private readonly _winBanner: WinBanner;
   private readonly _drawBowl: DrawBowl;
+  private readonly _explainText: Text;
 
   private readonly _gameConsole: ButtonConsole;
   private readonly _luckyDipButton: ButtonElement;
@@ -51,6 +52,7 @@ export class Scene extends Container implements IScene {
     this.chosenNumbers = [];
     this.winningNumbers = [];
 
+    // Create 6 bowls for the player, and 6 balls to be later revealed.
     for (let i = 0; i < 6; i++) {
       const playerBall = new Ball(69, true);
       playerBall.x = i * 50;
@@ -73,12 +75,24 @@ export class Scene extends Container implements IScene {
 
     this._drawBowl = new DrawBowl();
 
+    const explainStyle = new TextStyle({
+      align: "center",
+      fill: "#ffffff",
+      fontSize: 12,
+    });
+
+    this._explainText = new Text(
+      "I am sadly not an artist. \n As such, replacing a well-animated bowl \nof lottery balls is Tim here. Tim is happy.",
+      explainStyle
+    );
+
     const style = new TextStyle({
       align: "center",
       fill: "#ffffff",
       fontSize: 16,
     });
-    // BUTTON TES
+
+    // GAME CONSOLE SETUP
     this._gameConsole = new ButtonConsole(50);
     const luckyDipButton: ButtonElement = this._gameConsole.createButton(
       "Lucky Numbers",
@@ -114,16 +128,13 @@ export class Scene extends Container implements IScene {
 
     this._baseContainer.addChild(this._drawBowl);
 
+    this._drawBowl.addChild(this._explainText);
+
     this._baseContainer.addChild(this._gameConsole);
 
     this._baseContainer.addChild(this._ballContainer);
 
     this.addChild(this._baseContainer);
-
-    // this.addChild(this._winBanner);
-    // this.addChild(this._drawBowl);
-    // this.addChild(this._gameConsole);
-    // this.addChild(this._ballContainer);
   }
 
   private randomBall(array: number[]): number {
@@ -214,7 +225,6 @@ export class Scene extends Container implements IScene {
   public update(_framesPassed: number): void {}
 
   public resize(screenWidth: number, screenHeight: number): void {
-    this._winBanner.visible = true;
     const isLandscape = screenHeight < screenWidth;
     // const centreX = screenWidth / 2;
     // const centreY = screenHeight / 2;
@@ -230,30 +240,48 @@ export class Scene extends Container implements IScene {
 
     // A rudimentary set of positions to account for landscape and mobile
     // - with a proper parenting setup this could be handled more accurately.
+
+    // Comment No.2 - I have MANUALLY positioned these elements. Never again.
     if (isLandscape) {
-      this._drawBowl.x = 0 + this._drawBowl.width / 2;
+      this._drawBowl.scale = { x: 1, y: 1 };
+      this._drawBowl.x = 90;
       this._drawBowl.y = 0 + this._drawBowl.height / 2;
 
-      this._ballContainer.x = this._drawBowl.x;
+      this._ballContainer.scale = { x: 1, y: 1 };
+      this._ballContainer.x = this._drawBowl.x - 20;
       this._ballContainer.y = this._drawBowl.y + this._drawBowl.height + 20;
 
+      this._gameConsole.scale = { x: 1, y: 1 };
       this._gameConsole.x =
-        this._ballContainer.x + this._ballContainer.width + 80;
+        this._ballContainer.x + this._ballContainer.width + 50;
       this._gameConsole.y = this._ballContainer.y - 70;
 
+      this._winBanner.scale = { x: 1, y: 1 };
       this._winBanner.x = this._drawBowl.x + 200;
       this._winBanner.y = this._drawBowl.y;
+
+      this._explainText.x = 100;
+      this._explainText.y = -this._explainText.height / 2;
     } else {
-      this._ballContainer.scale = { x: 1.4, y: 1.4 };
-      this._ballContainer.x = -this._ballContainer.width / 2 + 25;
-      this._ballContainer.y = 160;
+      this._drawBowl.scale = { x: 2, y: 2 };
+      this._drawBowl.x = 160;
+      this._drawBowl.y = 0 + this._drawBowl.height / 2;
 
-      this._gameConsole.scale = { x: 1.4, y: 1.4 };
-      this._gameConsole.x = 0;
-      this._gameConsole.y = -this._gameConsole.height / 2 + 300;
+      this._ballContainer.scale = { x: 2, y: 2 };
+      this._ballContainer.x = this._drawBowl.x;
+      this._ballContainer.y = this._drawBowl.y + this._drawBowl.height + 90;
 
-      this._winBanner.x = 0;
-      this._winBanner.y = -50;
+      this._gameConsole.scale = { x: 3, y: 3 };
+      this._gameConsole.x =
+        this._ballContainer.x + this._ballContainer.width / 2 - 30;
+      this._gameConsole.y = this._ballContainer.y + this._ballContainer.height;
+
+      this._winBanner.scale = { x: 2, y: 2 };
+      this._winBanner.x = this._drawBowl.x + 400;
+      this._winBanner.y = this._drawBowl.y;
+
+      this._explainText.x = 100;
+      this._explainText.y = -this._explainText.height / 2;
     }
   }
 }
